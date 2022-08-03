@@ -110,6 +110,18 @@
 				
 				scene.addMeasurement(measure);
 			}
+
+			{ // SLOPE MEASURE
+				let measure = new Potree.Measure();
+				measure.name = "Slope Example";
+				measure.closed = false;
+				measure.showDistances = false;
+				measure.showSlope = true;
+				measure.addMarker(new THREE.Vector3(589866.29, 231380.51, 736.53));
+				measure.addMarker(new THREE.Vector3(589816.06, 231390.56, 746.15));
+				
+				scene.addMeasurement(measure);
+			}
 			
 			{ // AREA MEASURE
 				let measure = new Potree.Measure();

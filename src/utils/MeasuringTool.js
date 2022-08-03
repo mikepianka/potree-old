@@ -185,7 +185,7 @@ export class MeasuringTool extends EventDispatcher{
 		};
 
 		measure.showDistances = (args.showDistances === null) ? true : args.showDistances;
-
+		measure.showSlope = pick(args.showSlope, false);
 		measure.showArea = pick(args.showArea, false);
 		measure.showAngles = pick(args.showAngles, false);
 		measure.showCoordinates = pick(args.showCoordinates, false);

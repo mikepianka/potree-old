@@ -289,6 +289,7 @@ export class Measure extends THREE.Object3D {
 		this.name = 'Measure_' + this.constructor.counter;
 		this.points = [];
 		this._showDistances = true;
+		this._showSlope = false;
 		this._showCoordinates = false;
 		this._showArea = false;
 		this._closed = true;
@@ -590,6 +591,18 @@ export class Measure extends THREE.Object3D {
 		return this.getAngleBetweenLines(point, previous, next);
 	}
 
+	getSlope () {
+		if (this.points.length !== 2) {
+			return 0;
+		}
+
+		const run = this.getTotalDistance();
+		const rise = Math.abs(this.points[0].position.z - this.points[1].position.z);
+		const slope = rise / run;
+
+		return slope;
+	}
+
 	// updateAzimuth(){
 	// 	// if(this.points.length !== 2){
 	// 	// 	return;
@@ -677,6 +690,8 @@ export class Measure extends THREE.Object3D {
 				center = center.multiplyScalar(0.5);
 				let distance = point.position.distanceTo(nextPoint.position);
 
+				let slope = this.getSlope();
+
 				edgeLabel.position.copy(center);
 
 				let suffix = "";
@@ -686,8 +701,16 @@ export class Measure extends THREE.Object3D {
 				}
 
 				let txtLength = Utils.addCommas(distance.toFixed(2));
-				edgeLabel.setText(`${txtLength} ${suffix}`);
-				edgeLabel.visible = this.showDistances && (index < lastIndex || this.closed) && this.points.length >= 2 && distance > 0;
+				
+				if (this.showSlope) {
+					const percentSlope = (slope * 100).toFixed(0);
+					edgeLabel.setText(`~${percentSlope}% ${txtLength} ${suffix}`);
+					edgeLabel.visible = this.showSlope && (index < lastIndex || this.closed) && this.points.length >= 2 && distance > 0;
+				} else {
+					edgeLabel.setText(`${txtLength} ${suffix}`);
+					edgeLabel.visible = this.showDistances && (index < lastIndex || this.closed) && this.points.length >= 2 && distance > 0;
+				}
+				
 			}
 
 			{ // angle labels
@@ -930,6 +953,15 @@ export class Measure extends THREE.Object3D {
 
 	set showDistances (value) {
 		this._showDistances = value;
+		this.update();
+	}
+
+	get showSlope () {
+		return this._showSlope;
+	}
+
+	set showSlope (value) {
+		this._showSlope = value;
 		this.update();
 	}
 
